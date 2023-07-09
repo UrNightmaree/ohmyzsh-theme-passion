@@ -5,26 +5,26 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     {
         gdate
     } || {
-        echo "\n$fg_bold[yellow]passion.zsh-theme depends on cmd [gdate] to get current time in milliseconds$reset_color"
-        echo "$fg_bold[yellow][gdate] is not installed by default in macOS$reset_color"
-        echo "$fg_bold[yellow]to get [gdate] by running:$reset_color"
-        echo "$fg_bold[green]brew install coreutils;$reset_color";
-        echo "$fg_bold[yellow]\nREF: https://github.com/ChesterYue/ohmyzsh-theme-passion#macos\n$reset_color"
+        echo -e "\n\e[1;33mpassion.zsh-theme depends on cmd [gdate] to get current time in milliseconds\e[0m"
+        echo -e "\e[1;33m[gdate] is not installed by default in macOS\e[0m"
+        echo -e "\e[1;33mto get [gdate] by running:\e[0m"
+        echo -e "\e[1;32mbrew install coreutils;\e[0m";
+        echo -e "\e[1;33m\nREF: https://github.com/ChesterYue/ohmyzsh-theme-passion#macos\n\e[0m"
     }
 fi
 
 
 # time
 function real_time() {
-    local color="%{$fg_no_bold[cyan]%}";                    # color in PROMPT need format in %{XXX%} which is not same with echo
+    local color="\e[0;36m";                    # color in PROMPT need format in XXX which is not same with echo -e
     local time="[$(date +%H:%M:%S)]";
-    local color_reset="%{$reset_color%}";
-    echo "${color}${time}${color_reset}";
+    local color_reset="\e\e[0m";
+    echo -e -e "${color}${time}${color_reset}";
 }
 
 # login_info
 function login_info() {
-    local color="%{$fg_no_bold[cyan]%}";                    # color in PROMPT need format in %{XXX%} which is not same with echo
+    local color="\e[0;36m";                    # color in PROMPT need format in XXX which is not same with echo -e
     local ip
     if [[ "$OSTYPE" == "linux-gnu" ]]; then
         # Linux
@@ -43,55 +43,55 @@ function login_info() {
     else
         # Unknown.
     fi
-    local color_reset="%{$reset_color%}";
-    echo "${color}[%n@${ip}]${color_reset}";
+    local color_reset="\e\e[0m";
+    echo -e -e "${color}[%n@${ip}]${color_reset}";
 }
 
 
 # directory
 function directory() {
-    local color="%{$fg_no_bold[cyan]%}";
+    local color="\e[0;36m";
     # REF: https://stackoverflow.com/questions/25944006/bash-current-working-directory-with-replacing-path-to-home-folder
     local directory="${PWD/#$HOME/~}";
-    local color_reset="%{$reset_color%}";
-    echo "${color}[${directory}]${color_reset}";
+    local color_reset="\e\e[0m";
+    echo -e -e "${color}[${directory}]${color_reset}";
 }
 
 
 # git
-ZSH_THEME_GIT_PROMPT_PREFIX="%{$fg_no_bold[cyan]%}[";
-ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%} ";
-ZSH_THEME_GIT_PROMPT_DIRTY=" %{$fg_no_bold[red]%}✖%{$fg_no_bold[cyan]%}]";
-ZSH_THEME_GIT_PROMPT_CLEAN="%{$fg_no_bold[cyan]%}]";
+ZSH_THEME_GIT_PROMPT_PREFIX="\e[0;36m[";
+ZSH_THEME_GIT_PROMPT_SUFFIX="\e\e[0m ";
+ZSH_THEME_GIT_PROMPT_DIRTY=" \e[0;31m✖\e[0;36m]";
+ZSH_THEME_GIT_PROMPT_CLEAN="\e[0;36m]";
 
 function update_git_status() {
     GIT_STATUS=$(git_prompt_info);
 }
 
 function git_status() {
-    echo "${GIT_STATUS}"
+    echo -e "${GIT_STATUS}"
 }
 
 
 # command
 function update_command_status() {
     local arrow="";
-    local color_reset="%{$reset_color%}";
-    local reset_font="%{$fg_no_bold[white]%}";
+    local color_reset="\e[0m";
+    local reset_font="\e[";
     COMMAND_RESULT=$1;
     export COMMAND_RESULT=$COMMAND_RESULT
     if $COMMAND_RESULT;
     then
-        arrow="%{$fg_bold[red]%}❱%{$fg_bold[yellow]%}❱%{$fg_bold[green]%}❱";
+        arrow="\e[1;31m%}❱\e[1;33m❱%{\e[1;32m❱";
     else
-        arrow="%{$fg_bold[red]%}❱❱❱";
+        arrow="\e[1;31m❱❱❱";
     fi
     COMMAND_STATUS="${arrow}${reset_font}${color_reset}";
 }
 update_command_status true;
 
 function command_status() {
-    echo "${COMMAND_STATUS}"
+    echo -e "${COMMAND_STATUS}"
 }
 
 
@@ -107,16 +107,16 @@ output_command_execute_after() {
     local color_cmd="";
     if $1;
     then
-        color_cmd="$fg_no_bold[green]";
+        color_cmd="\e[0;32m";
     else
-        color_cmd="$fg_bold[red]";
+        color_cmd="\e[1;31m";
     fi
-    local color_reset="$reset_color";
+    local color_reset="\e[0m";
     cmd="${color_cmd}${cmd}${color_reset}"
 
     # time
     local time="[$(date +%H:%M:%S)]"
-    local color_time="$fg_no_bold[cyan]";
+    local color_time="\e[0;36m";
     time="${color_time}${time}${color_reset}";
 
     # cost
@@ -129,11 +129,11 @@ output_command_execute_after() {
         cost="0${cost}"
     fi
     cost="[cost ${cost}s]"
-    local color_cost="$fg_no_bold[cyan]";
+    local color_cost="\e[0;36m";
     cost="${color_cost}${cost}${color_reset}";
 
-    echo -e "${time} ${cost} ${cmd}";
-    echo -e "";
+    echo -e -e "${time} ${cost} ${cmd}";
+    echo -e -e "";
 }
 
 
@@ -162,7 +162,7 @@ current_time_millis() {
     else
         # Unknown.
     fi
-    echo $time_millis;
+    echo -e $time_millis;
 }
 
 
